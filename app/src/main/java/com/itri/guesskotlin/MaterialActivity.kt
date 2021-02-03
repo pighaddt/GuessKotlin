@@ -22,7 +22,7 @@ class MaterialActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_material)
         viewModel = ViewModelProvider(this).get(GuessViewModel::class.java)
         viewModel.counter.observe(this, Observer { count->
             counter.text = count.toString()
@@ -63,12 +63,13 @@ class MaterialActivity : AppCompatActivity() {
                 viewModel.guess(number)
             }else{
                 AlertDialog.Builder(this)
-                        .setTitle("Warning!!!!")
-                        .setMessage("please enter integer number")
-                        .setNeutralButton("OK", null)
-                        .show()
+                    .setTitle("Warning!!!!")
+                    .setMessage("please enter integer number")
+                    .setNeutralButton("OK", null)
+                    .show()
             }
         }
+
         //replay on click
         replay.setOnClickListener {
             viewModel.replay()
