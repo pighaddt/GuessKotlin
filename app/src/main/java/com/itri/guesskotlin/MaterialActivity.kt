@@ -13,9 +13,18 @@ import androidx.lifecycle.ViewModelProvider
 import com.itri.guesskotlin.data.GameDatabse
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_material.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 
-class MaterialActivity : AppCompatActivity() {
+class MaterialActivity : AppCompatActivity() , CoroutineScope{
+    private lateinit var job: Job
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Main
+
     private val REQUEST_RECORD: Int = 100
     private lateinit var viewModel: GuessViewModel
     private val TAG = MainActivity::class.java.simpleName
@@ -23,16 +32,23 @@ class MaterialActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_material)
+        job = Job()
         viewModel = ViewModelProvider(this).get(GuessViewModel::class.java)
         viewModel.counter.observe(this, Observer { count->
             counter.text = count.toString()
         })
-        AsyncTask.execute {
-            val list = GameDatabse.getInstance(this).recordDao().getAll()
+        launch {
+            val list = GameDatabse.getInstance(this@MaterialActivity).recordDao().getAll()
             list.forEach {
                 Log.d(TAG, "onCreate: ${it.nickname} ${it.counter}")
             }
         }
+        /*AsyncTask.execute {
+            val list = GameDatabse.getInstance(this).recordDao().getAll()
+            list.forEach {
+                Log.d(TAG, "onCreate: ${it.nickname} ${it.counter}")
+            }
+        }*/
 
         viewModel.result.observe(this, Observer { message ->
             AlertDialog.Builder(this)
@@ -77,10 +93,17 @@ class MaterialActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_RECORD){
             viewModel.replay()
         }
     }
+
+
 }
