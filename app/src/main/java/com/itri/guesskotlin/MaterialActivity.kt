@@ -41,12 +41,12 @@ class MaterialActivity : AppCompatActivity() {
                     .setNeutralButton("OK", DialogInterface.OnClickListener { dialog, which ->
                         if (message == GameResult.BINGO) {
                             //room
-                            Thread() {
-//                            val record = Record("Angus", 4)
+                            /*Thread() {
+                                val record = Record("Angus", 4)
 
-//                            GameDatabse.getInstance(this).recordDao().insert(record)
-//                            Log.d(TAG, "onCreate: ${GameDatabse.getInstance(this).recordDao().getAll()}")
-                            }.start()
+                                GameDatabse.getInstance(this).recordDao().insert(record)
+                                Log.d(TAG, "onCreate: ${GameDatabse.getInstance(this).recordDao().getAll()}")
+                            }.start()*/
 
                             //intent
                             val intent = Intent(this, RecordActivity::class.java)
