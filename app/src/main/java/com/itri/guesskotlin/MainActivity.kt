@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.row_function.view.*
 import org.json.JSONArray
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
             "Record list",
             "Download coupons",
             "News",
+            "Snooker",
             "Maps")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,11 +38,9 @@ class MainActivity : AppCompatActivity() {
 //            Log.d(TAG, "onCreate: ${data}")
 //            println(data)
             val array = JSONArray(data)
-            for (i in 0..array.length()-1){
-                val obj = array.getJSONObject(i)
-                val id = obj.getInt("ID")
-                Log.d(TAG, "JsonObjectID: ${id}")
-//                println(id)
+            val lists = Gson().fromJson(data, EventResult::class.java)
+            lists.forEach{
+                print(it.ID)
             }
         }.start()
 
@@ -81,6 +81,7 @@ class MainActivity : AppCompatActivity() {
         when (position){
             1 -> startActivity(Intent(this, MaterialActivity::class.java))
             2 -> startActivity(Intent(this, RecordListActivity::class.java))
+            5 -> startActivity(Intent(this, SnookerActivity::class.java))
             else-> return
         }
     }
