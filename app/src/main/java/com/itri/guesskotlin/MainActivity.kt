@@ -4,6 +4,7 @@ package com.itri.guesskotlin
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -11,9 +12,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.row_function.view.*
+import org.json.JSONArray
+import org.json.JSONObject
+import java.net.URL
 
 
 class MainActivity : AppCompatActivity() {
+    private val TAG = MainActivity::class.java.simpleName
     private val functions = arrayListOf<String>(
             "Camera",
             "Guess game",
@@ -25,6 +30,21 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        //json read
+        Thread{
+            val data = URL("http://api.snooker.org/?t=5&s=2020").readText()
+//            Log.d(TAG, "onCreate: ${data}")
+//            println(data)
+            val array = JSONArray(data)
+            for (i in 0..array.length()-1){
+                val obj = array.getJSONObject(i)
+                val id = obj.getInt("ID")
+                Log.d(TAG, "JsonObjectID: ${id}")
+//                println(id)
+            }
+        }.start()
+
+
         //recycler
 
         recycler.layoutManager = LinearLayoutManager(this)
