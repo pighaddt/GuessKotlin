@@ -15,11 +15,14 @@ import java.net.URL
 import kotlin.coroutines.CoroutineContext
 
 class SnookerActivity : AppCompatActivity() , CoroutineScope{
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Main
     private lateinit var job: Job
     private val TAG = SnookerActivity::class.java.simpleName
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_snooker)
+
         job = Job()
         //MVVM JSON READ
         val viewModel = ViewModelProvider(this).get(SnookerViewModel::class.java)
@@ -44,6 +47,5 @@ class SnookerActivity : AppCompatActivity() , CoroutineScope{
         job.cancel()
     }
 
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.IO
+
 }
