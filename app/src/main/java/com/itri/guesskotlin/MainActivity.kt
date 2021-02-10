@@ -1,15 +1,19 @@
 package com.itri.guesskotlin
 
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -21,6 +25,7 @@ import java.net.URL
 
 
 class MainActivity : AppCompatActivity() {
+    private val REQUEST_CODE_CAMERA: Int = 100
     private val TAG = MainActivity::class.java.simpleName
     private val functions = arrayListOf<String>(
             "Camera",
@@ -96,6 +101,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun FunctionClicked(position: Int) {
         when (position){
+            0 ->{
+                val cameraPermission = ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.CAMERA)
+                if (cameraPermission == PackageManager.PERMISSION_GRANTED){
+                    takePhoto()
+                }else{
+                    ActivityCompat.requestPermissions(this,
+                            arrayOf(Manifest.permission.CAMERA), REQUEST_CODE_CAMERA)
+                }
+                takePhoto()
+            }
             1 -> startActivity(Intent(this, MaterialActivity::class.java))
             2 -> startActivity(Intent(this, RecordListActivity::class.java))
             5 -> startActivity(Intent(this, SnookerActivity::class.java))
@@ -103,7 +119,35 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun takePhoto() {
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivity(cameraIntent)
+    }
+
     class FunctionHolder(view : View) : RecyclerView.ViewHolder(view) {
         val textView : TextView = view.name
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<out String>,
+                                            grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE_CAMERA){
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                takePhoto()
+            }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.action_cache -> Log.d(TAG, "onOptionsItemSelected: cache selected")
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
