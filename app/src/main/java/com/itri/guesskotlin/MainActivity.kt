@@ -114,6 +114,7 @@ class MainActivity : AppCompatActivity() {
             }
             1 -> startActivity(Intent(this, MaterialActivity::class.java))
             2 -> startActivity(Intent(this, RecordListActivity::class.java))
+            4 -> startActivity(Intent(this, NewsActivity::class.java))
             5 -> startActivity(Intent(this, SnookerActivity::class.java))
             else-> return
         }
@@ -146,7 +147,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.action_cache -> Log.d(TAG, "onOptionsItemSelected: cache selected")
+            R.id.action_cache -> {
+                Log.d(TAG, "onOptionsItemSelected: cache selected")
+                val cacheIntent = Intent(this, CacheService::class.java)
+                startService(cacheIntent)
+            }
         }
         return super.onOptionsItemSelected(item)
     }
